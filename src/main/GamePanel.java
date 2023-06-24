@@ -26,8 +26,6 @@ public class GamePanel extends JPanel implements Runnable {
     // Configurações do mundo
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
-    // public final int worldWidth = tileSize * maxWorldCol;
-    // public final int worldHeight = tileSize * maxWorldRow;
 
     int FPS = 60;
 
@@ -35,7 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
     public CollisionChecker cChecker = new CollisionChecker(this);
-    public AssetSetter aStter = new AssetSetter(this);
+    public AssetSetter aSetter = new AssetSetter(this);
     public Player player = new Player(this, keyH);
     public SuperObject[] obj = new SuperObject[10];
 
@@ -50,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame () {
 
-        aStter.setObject();
+        aSetter.setObject();
     }
 
     public void startGameThread() {
@@ -66,7 +64,6 @@ public class GamePanel extends JPanel implements Runnable {
         long lastTime = System.nanoTime();
         long currentTime;
         long timer = 0;
-        int drawCount = 0;
 
         while(gameThread != null) {
 
@@ -80,12 +77,9 @@ public class GamePanel extends JPanel implements Runnable {
                 update();
                 repaint();
                 delta--;
-                drawCount++;
             }
 
             if(timer >= 1000000000) {
-                System.out.println("FPS: " + drawCount);
-                drawCount = 0;
                 timer = 0;
             }
         }
