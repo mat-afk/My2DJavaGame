@@ -36,6 +36,7 @@ public class GamePanel extends JPanel implements Runnable {
     Sound music = new Sound();
     public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
+    public UI ui = new UI(this);
     Thread gameThread;
 
     // Entity and object
@@ -112,6 +113,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         player.draw(g2);
 
+        ui.draw(g2);
+
         g2.dispose();
     }
 
@@ -121,11 +124,9 @@ public class GamePanel extends JPanel implements Runnable {
         music.loop();
     }
 
-    /*
     public void stopMusic() {
         music.stop();
     }
-    */
 
     public void playSoundEffect(int i) {
         sound.setFile(i);
