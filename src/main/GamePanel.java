@@ -7,13 +7,14 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 import javax.swing.plaf.DimensionUIResource;
 
+import entity.Entity;
 import entity.Player;
 import object.SuperObject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
     
-    // Configurações da tela
+    // Window configurations
     final int originalTileSize = 16;  // 16x16
     final int scale = 3;
 
@@ -27,6 +28,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
 
+    // Fps
     int FPS = 60;
 
     // System
@@ -42,6 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
     // Entity and object
     public Player player = new Player(this, keyH);
     public SuperObject[] obj = new SuperObject[10];
+    public Entity[] npc = new Entity[10];
 
     // Game state
     public int gameState;
@@ -59,6 +62,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame () {
         aSetter.setObject();
+        aSetter.setNPC();
         playMusic(0);
         gameState = playState;
     }
@@ -99,36 +103,54 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         if(gameState == playState) {
             player.update();
+
+            for(Entity en : npc) {
+                if(en != null) {
+                    en.update();
+                }
+            }
         }
 
         if(gameState == pauseState) {
-
+            stopMusic();
         }
     }
 
     public void paintComponent(Graphics g) {
-
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        // Debug
         long drawStart = 0;
 
         if(keyH.checkDrawTime) {
             drawStart = System.nanoTime();
         }
 
+        // Tile
         tileM.draw(g2);
 
+        // Object
         for(SuperObject so : obj) {
             if(so != null) {
                 so.draw(g2, this);
             }
         }
 
+        // Npc
+        for(Entity en : npc) {
+            if(en != null) {
+                en.draw(g2);
+            }
+        }
+
+        // Player
         player.draw(g2);
 
+        // UI
         ui.draw(g2);
 
+        // Debug
         if(keyH.checkDrawTime) {
             long drawEnd = System.nanoTime();
             long passed = drawEnd - drawStart;
