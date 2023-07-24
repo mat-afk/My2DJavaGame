@@ -3,13 +3,13 @@ package main;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.*;
 
 import javax.swing.JPanel;
 import javax.swing.plaf.DimensionUIResource;
 
 import entity.Entity;
 import entity.Player;
-import object.SuperObject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -44,8 +44,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     // Entity and object
     public Player player = new Player(this, keyH);
-    public SuperObject[] obj = new SuperObject[10];
+    public Entity[] obj = new Entity[10];
     public Entity[] npc = new Entity[10];
+    ArrayList<Entity> entityList = new ArrayList<>();
 
     // Game state
     public int gameState;
@@ -131,32 +132,41 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         // Title Screen
-        if(gameState == titleState) {
-            ui.draw(g2);
-        } else {
+        if (gameState != titleState) {
             // Tile
             tileM.draw(g2);
 
-            // Object
-            for(SuperObject so : obj) {
-                if(so != null) {
-                    so.draw(g2, this);
+            // add entities to the list
+            entityList.add(player);
+
+            for (Entity n : npc) {
+                if (n != null) {
+                    entityList.add(n);
                 }
             }
 
-            // Npc
-            for(Entity en : npc) {
-                if(en != null) {
-                    en.draw(g2);
+            for (Entity ob : obj) {
+                if (ob != null) {
+                    entityList.add(ob);
                 }
             }
 
-            // Player
-            player.draw(g2);
+            // sort
+            entityList.sort(Comparator.comparingInt(e -> e.worldY));
 
-            // UI
-            ui.draw(g2);
+            // draw entities
+            for(Entity entity : entityList) {
+                entity.draw(g2);
+            }
+
+            // empty entity list
+            if (entityList.size() > 0) {
+                entityList.subList(0, entityList.size()).clear();
+            }
         }
+
+        // UI
+        ui.draw(g2);
 
         // Debug
         if(keyH.checkDrawTime) {
