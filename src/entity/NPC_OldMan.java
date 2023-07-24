@@ -14,10 +14,10 @@ public class NPC_OldMan extends Entity {
 
         solidArea.x = 8;
         solidArea.y = 16;
-        solidAreaDefaultX = solidArea.x;
-        solidAreaDefaultY = solidArea.y;
         solidArea.width = 32;
         solidArea.height = 32;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
 
         getNPCImage();
         setDialogue();

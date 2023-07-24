@@ -46,6 +46,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this, keyH);
     public Entity[] obj = new Entity[10];
     public Entity[] npc = new Entity[10];
+    public Entity[] monster = new Entity[20];
     ArrayList<Entity> entityList = new ArrayList<>();
 
     // Game state
@@ -67,6 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void setupGame () {
         aSetter.setObject();
         aSetter.setNPC();
+        aSetter.setMonster();
         // playMusic(0);
         gameState = titleState;
     }
@@ -113,6 +115,12 @@ public class GamePanel extends JPanel implements Runnable {
                     en.update();
                 }
             }
+
+            for(Entity en : monster) {
+                if(en != null) {
+                    en.update();
+                }
+            }
         }
 
         if(gameState == pauseState) {
@@ -139,15 +147,21 @@ public class GamePanel extends JPanel implements Runnable {
             // add entities to the list
             entityList.add(player);
 
-            for (Entity n : npc) {
-                if (n != null) {
-                    entityList.add(n);
+            for (Entity en : npc) {
+                if (en != null) {
+                    entityList.add(en);
                 }
             }
 
-            for (Entity ob : obj) {
-                if (ob != null) {
-                    entityList.add(ob);
+            for (Entity en : obj) {
+                if (en != null) {
+                    entityList.add(en);
+                }
+            }
+
+            for (Entity en : monster) {
+                if (en != null) {
+                    entityList.add(en);
                 }
             }
 
@@ -155,8 +169,8 @@ public class GamePanel extends JPanel implements Runnable {
             entityList.sort(Comparator.comparingInt(e -> e.worldY));
 
             // draw entities
-            for(Entity entity : entityList) {
-                entity.draw(g2);
+            for(Entity en : entityList) {
+                en.draw(g2);
             }
 
             // empty entity list
