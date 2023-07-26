@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class Entity {
 
-    GamePanel gp;
+    protected GamePanel gp;
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2,
             attackLeft1, attackLeft2, attackRight1, attackRight2;
@@ -29,12 +29,17 @@ public class Entity {
     int dialogueIndex = 0;
     public boolean collisionOn = false;
     public boolean invincible = false;
-    boolean attacking = false;
+    public boolean attacking = false;
+    public boolean alive = true;
+    public boolean dying = false;
+    boolean hpBarOn = false;
 
     // Counter
     public int spriteCounter = 0;
     public int actionLockCounter = 0;
     public int invincibleCounter = 0;
+    int dyingCounter = 0;
+    int hpBarCounter = 0;
 
     // Character Attributes
     public String type = "ENT";
@@ -48,6 +53,8 @@ public class Entity {
     }
 
     public void setAction() { }
+
+    public void damageReaction() { }
 
     public void speak() {
         if(dialogues[dialogueIndex] == null) {
@@ -76,6 +83,7 @@ public class Entity {
 
         if(this.type.equals("MON") && contactPlayer) {
             if(!gp.player.invincible) {
+                gp.playSoundEffect(6);
                 gp.player.life -= 1;
                 gp.player.invincible = true;
             }
@@ -110,34 +118,6 @@ public class Entity {
         }
     }
 
-    public BufferedImage setup(String imagePath) {
-        UtilityTool uTool = new UtilityTool();
-        BufferedImage image = null;
-
-        try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(imagePath + ".png")));
-            image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        return image;
-    }
-
-    public BufferedImage setup(String imagePath, int width, int height) {
-        UtilityTool uTool = new UtilityTool();
-        BufferedImage image = null;
-
-        try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(imagePath + ".png")));
-            image = uTool.scaleImage(image, width, height);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        return image;
-    }
-
     public void draw(Graphics2D g2) {
 
         BufferedImage image = null;
@@ -168,13 +148,90 @@ public class Entity {
                 }
             }
 
+            // Monster HP bar
+            if(type.equals("MON") && hpBarOn) {
+
+                double oneScale = (double) gp.tileSize / maxLife;
+                double hpBarValue = oneScale * life;
+
+                g2.setColor(new Color(35, 35, 35));
+                g2.fillRect(screenX - 2, screenY - 16, gp.tileSize + 3, 9);
+
+                g2.setColor(new Color(255, 0, 30));
+                g2.fillRect(screenX, screenY - 14, (int)hpBarValue, 6);
+
+                hpBarCounter++;
+
+                if(hpBarCounter > 600) {
+                    hpBarCounter = 0;
+                    hpBarOn = false;
+                }
+            }
+
             if(invincible) {
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+                hpBarOn = true;
+                hpBarCounter = 0;
+                changeAlpha(g2, 0.4f);
+            }
+            if(dying) {
+                dyingAnimation(g2);
             }
 
             g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+            changeAlpha(g2, 1f);
         }
+    }
+
+    public void dyingAnimation(Graphics2D g2) {
+        dyingCounter++;
+
+        int i = 5;
+
+        if(dyingCounter <= i) { changeAlpha(g2, 0f); }
+        if(dyingCounter > i && dyingCounter <= i * 2) { changeAlpha(g2, 1f); }
+        if(dyingCounter > i * 2 && dyingCounter <= i * 3) { changeAlpha(g2, 0f); }
+        if(dyingCounter > i * 3 && dyingCounter <= i * 4) { changeAlpha(g2, 1f); }
+        if(dyingCounter > i * 4 && dyingCounter <= i * 5) { changeAlpha(g2, 0f); }
+        if(dyingCounter > i * 5 && dyingCounter <= i * 6) { changeAlpha(g2, 1f); }
+        if(dyingCounter > i * 6 && dyingCounter <= i * 7) { changeAlpha(g2, 0f); }
+        if(dyingCounter > i * 7 && dyingCounter <= i * 8) { changeAlpha(g2, 1f); }
+
+        if(dyingCounter > i * 8) {
+            dying = false;
+            alive = false;
+        }
+    }
+
+    public void changeAlpha(Graphics2D g2, float alphaValue) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
+    }
+
+    public BufferedImage setup(String imagePath) {
+        UtilityTool uTool = new UtilityTool();
+        BufferedImage image = null;
+
+        try {
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(imagePath + ".png")));
+            image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return image;
+    }
+
+    public BufferedImage setup(String imagePath, int width, int height) {
+        UtilityTool uTool = new UtilityTool();
+        BufferedImage image = null;
+
+        try {
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(imagePath + ".png")));
+            image = uTool.scaleImage(image, width, height);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return image;
     }
 }
