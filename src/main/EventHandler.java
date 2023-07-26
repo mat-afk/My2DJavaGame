@@ -42,9 +42,9 @@ public class EventHandler {
         if(distance > gp.tileSize) canTouchEvent = true;
 
         if(canTouchEvent) {
-            if(hit(27, 16, "right")) damagePit(27, 16, gp.dialogueState);
-            if(hit(23, 19, "any")) damagePit(27, 16, gp.dialogueState);
-            if(hit(23, 12, "up")) healingPool(23, 12, gp.dialogueState);
+            if (hit(27, 16, "right")) damagePit(gp.dialogueState);
+            if (hit(23, 19, "any")) damagePit(gp.dialogueState);
+            if (hit(23, 12, "up")) healingPool(gp.dialogueState);
         }
     }
 
@@ -73,15 +73,16 @@ public class EventHandler {
         return hit;
     }
 
-    public void teleport(int col, int row, int gameState) {
+    public void teleport(int gameState) {
         gp.gameState = gameState;
         gp.ui.currentDialogue = "Teleport!";
         gp.player.worldX = gp.tileSize * 37;
         gp.player.worldY = gp.tileSize * 10;
     }
 
-    public void damagePit(int col, int row, int gameState) {
+    public void damagePit(int gameState) {
         gp.gameState = gameState;
+        gp.playSoundEffect(6);
         gp.ui.currentDialogue = "You fall into a pit!";
         gp.player.life -= 1;
         canTouchEvent = false;
@@ -90,9 +91,11 @@ public class EventHandler {
         // eventRect[col][row].eventDone = true;
     }
 
-    public void healingPool(int col, int row, int gameState) {
+    public void healingPool(int gameState) {
         if(gp.keyH.enterPressed) {
             gp.gameState = gameState;
+            gp.player.attackCanceled = true;
+            gp.playSoundEffect(2);
             gp.ui.currentDialogue = "You drink water. \nYour life has been recovered.";
             gp.player.life = gp.player.maxLife;
         }
