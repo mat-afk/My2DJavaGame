@@ -98,7 +98,12 @@ public class Entity {
         if(this.type.equals("MON") && contactPlayer) {
             if(!gp.player.invincible) {
                 gp.playSoundEffect(6);
-                gp.player.life -= 1;
+
+                int damage = attack - gp.player.defense;
+                if(damage < 0) {
+                    damage = 0;
+                }
+                gp.player.life -= damage;
                 gp.player.invincible = true;
             }
         }
