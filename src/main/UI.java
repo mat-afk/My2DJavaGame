@@ -23,6 +23,12 @@ public class UI {
     public String currentDialogue = "";
     public int commandNum = 0;
     public int titleScreenState = 0;
+    public int slotCol = 0;
+    public int slotRow = 0;
+    final public int minSlotRow = 0;
+    final public int maxSlotRow = 3;
+    final public int minSlotCol = 0;
+    final public int maxSlotCol = 4;
 
     public UI(GamePanel gp)  {
         this.gp = gp;
@@ -78,6 +84,7 @@ public class UI {
         // Character State
         if(gp.gameState == gp.characterState) {
             drawCharacterScreen();
+            drawInventory();
         }
     }
 
@@ -352,6 +359,88 @@ public class UI {
         textY += gp.tileSize;
 
         g2.drawImage(gp.player.currentShield.down1, tailX - gp.tileSize, textY - 5, null);
+    }
+
+    public void drawInventory() {
+
+        // Frame
+        final int frameX = gp.tileSize * 9;
+        final int frameY = gp.tileSize;
+        final int frameWidth = gp.tileSize * 6;
+        final int frameHeight = gp.tileSize * 5;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        // Slot
+        final int slotXStart = frameX + 20;
+        final int slotYStart = frameY + 20;
+        int slotX = slotXStart;
+        int slotY = slotYStart;
+        int slotSize = gp.tileSize + 3;
+
+        // Draw Player's items
+        int rowNumber = 1;
+        int cont = 0;
+
+        for(int i = 0; i < gp.player.inventory.size(); i++) {
+
+            // Equip cursor
+            if(gp.player.inventory.get(i) == gp.player.currentWeapon ||
+            gp.player.inventory.get(i) == gp.player.currentShield) {
+
+                g2.setColor(new Color(240, 190, 90));
+                g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
+            }
+
+            g2.drawImage(gp.player.inventory.get(i).down1, slotX, slotY, null);
+
+            slotX += slotSize;
+
+            if(i == (maxSlotCol * rowNumber) + cont) {
+                slotX = slotXStart;
+                slotY += slotSize;
+
+                rowNumber++;
+                cont++;
+            }
+        }
+
+        // Cursor
+        int cursorX = slotXStart + (slotSize * slotCol);
+        int cursorY = slotYStart + (slotSize * slotRow);
+        int cursorWidth = gp.tileSize;
+        int cursorHeight = gp.tileSize;
+
+        // Draw cursor
+        g2.setColor(Color.white);
+        g2.setStroke(new BasicStroke(3));
+        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+
+        // Description frame
+        final int dFrameY = frameY + frameHeight + 10;
+        final int dFrameHeight = gp.tileSize * 3;
+
+        // Draw description text
+        int textX = frameX + 20;
+        int textY = dFrameY + gp.tileSize;
+        g2.setFont(g2.getFont().deriveFont(28F));
+
+        int itemIndex = getItemIndexOnSlot();
+
+        if(itemIndex < gp.player.inventory.size()) {
+
+            // Draw description frame only if a item is being selected
+            drawSubWindow(frameX, dFrameY, frameWidth, dFrameHeight);
+
+            for(String line : gp.player.inventory.get(itemIndex).description.split("\n")) {
+
+                g2.drawString(line, textX, textY);
+                textY += 32;
+            }
+        }
+    }
+
+    public int getItemIndexOnSlot() {
+        return slotCol + (slotRow * 5);
     }
 
     public void drawSubWindow(int x, int y, int width, int height) {

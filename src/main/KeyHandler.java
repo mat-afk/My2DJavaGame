@@ -137,9 +137,42 @@ public class KeyHandler implements KeyListener {
     }
 
     public void characterState(int code) {
-        if(code == KeyEvent.VK_C) {
+        if(code == KeyEvent.VK_C || code == KeyEvent.VK_ESCAPE) {
             gp.gameState = gp.playState;
         }
+
+        if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            if(gp.ui.slotRow > gp.ui.minSlotRow) {
+                gp.ui.slotRow--;
+                gp.playSoundEffect(9);
+            }
+        }
+
+        if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+            if(gp.ui.slotRow < gp.ui.maxSlotRow) {
+                gp.ui.slotRow++;
+                gp.playSoundEffect(9);
+            }
+        }
+
+        if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+            if(gp.ui.slotCol > gp.ui.minSlotCol) {
+                gp.ui.slotCol--;
+                gp.playSoundEffect(9);
+            }
+        }
+
+        if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+            if(gp.ui.slotCol < gp.ui.maxSlotCol) {
+                gp.ui.slotCol++;
+                gp.playSoundEffect(9);
+            }
+        }
+
+        if(code == KeyEvent.VK_ENTER) {
+            gp.player.selectItem();
+        }
+
     }
 
     @Override
