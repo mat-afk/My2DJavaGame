@@ -5,7 +5,7 @@ import main.GamePanel;
 
 public class OBJ_Potion extends Entity {
 
-    int heal = 5;
+    int heal;
 
     public OBJ_Potion(GamePanel gp) {
         super(gp);
@@ -14,6 +14,7 @@ public class OBJ_Potion extends Entity {
 
         name = "Potion";
         description = "[" + name + "]\nHeals your life by " + heal + ".";
+        heal = 5;
         down1 = setup("/objects/potion_red");
     }
 
@@ -23,10 +24,6 @@ public class OBJ_Potion extends Entity {
         gp.ui.currentDialogue = "You drink the " + name + "!\n" +
             "Your life has been recovered by " + heal + ".";
         entity.life += heal;
-
-        if(gp.player.life > gp.player.maxLife) {
-            gp.player.life = gp.player.maxLife;
-        }
 
         gp.playSoundEffect(2);
     }

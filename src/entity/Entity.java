@@ -77,7 +77,7 @@ public class Entity {
     public final int typeAxe = 5;
     public final int typeShield = 6;
     public final int typeConsumable = 7;
-
+    public final int typePickup = 8;
 
     public Entity(GamePanel gp) {
         this.gp = gp;
@@ -103,6 +103,20 @@ public class Entity {
     }
 
     public void use(Entity entity) { }
+
+    public void checkDrop() { }
+
+    public void dropItem(Entity droppedItem) {
+
+        for(int i = 0; i < gp.obj.length; i++) {
+            if(gp.obj[i] == null) {
+                gp.obj[i] = droppedItem;
+                gp.obj[i].worldX = worldX;
+                gp.obj[i].worldY = worldY;
+                break;
+            }
+        }
+    }
 
     public void damagePlayer(int attack) {
         if(!gp.player.invincible) {
