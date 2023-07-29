@@ -7,7 +7,7 @@ public class KeyHandler implements KeyListener {
 
     GamePanel gp;
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, shotKeyPressed;
 
     boolean checkDrawTime;
 
@@ -107,16 +107,20 @@ public class KeyHandler implements KeyListener {
             rightPressed = true;
         }
 
-        if(code == KeyEvent.VK_P) {
-            gp.gameState = gp.pauseState;
-        }
-
         if(code == KeyEvent.VK_ENTER) {
             enterPressed = true;
         }
 
+        if(code == KeyEvent.VK_P) {
+            gp.gameState = gp.pauseState;
+        }
+
         if(code == KeyEvent.VK_C) {
             gp.gameState = gp.characterState;
+        }
+
+        if(code == KeyEvent.VK_F) {
+            shotKeyPressed = true;
         }
 
         if(code == KeyEvent.VK_T) {
@@ -194,6 +198,10 @@ public class KeyHandler implements KeyListener {
 
         if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
             rightPressed = false;
+        }
+
+        if(code == KeyEvent.VK_F) {
+            shotKeyPressed = false;
         }
     }
 }

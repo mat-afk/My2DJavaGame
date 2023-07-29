@@ -38,6 +38,7 @@ public class Entity {
     public int spriteCounter = 0;
     public int actionLockCounter = 0;
     public int invincibleCounter = 0;
+    public int shotAvailableCounter = 0;
     int dyingCounter = 0;
     int hpBarCounter = 0;
 
@@ -46,6 +47,9 @@ public class Entity {
     public int speed;
     public int maxLife;
     public int life;
+    public int maxMana;
+    public int mana;
+    public int ammo;
     public int level;
     public int strength;
     public int dexterity;
@@ -56,11 +60,13 @@ public class Entity {
     public int coin;
     public Entity currentWeapon;
     public Entity currentShield;
+    public Projectile projectile;
 
     // Item attributes
     public int attackValue;
     public int defenseValue;
     public String description = "";
+    public int useCost;
 
     // Type
     public int type = 0;
@@ -98,6 +104,19 @@ public class Entity {
 
     public void use(Entity entity) { }
 
+    public void damagePlayer(int attack) {
+        if(!gp.player.invincible) {
+            gp.playSoundEffect(6);
+
+            int damage = attack - gp.player.defense;
+            if(damage < 0) {
+                damage = 0;
+            }
+            gp.player.life -= damage;
+            gp.player.invincible = true;
+        }
+    }
+
     public void update() {
         setAction();
 
@@ -109,16 +128,7 @@ public class Entity {
         boolean contactPlayer = gp.cChecker.checkPlayer(this);
 
         if(this.type == typeMonster && contactPlayer) {
-            if(!gp.player.invincible) {
-                gp.playSoundEffect(6);
-
-                int damage = attack - gp.player.defense;
-                if(damage < 0) {
-                    damage = 0;
-                }
-                gp.player.life -= damage;
-                gp.player.invincible = true;
-            }
+            damagePlayer(attack);
         }
 
         if(!collisionOn) {
@@ -147,6 +157,10 @@ public class Entity {
                 invincible = false;
                 invincibleCounter = 0;
             }
+        }
+
+        if(shotAvailableCounter < 30) {
+            shotAvailableCounter++;
         }
     }
 
@@ -209,7 +223,7 @@ public class Entity {
                 dyingAnimation(g2);
             }
 
-            g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(image, screenX, screenY, null);
 
             changeAlpha(g2, 1f);
         }
@@ -230,7 +244,6 @@ public class Entity {
         if(dyingCounter > i * 7 && dyingCounter <= i * 8) { changeAlpha(g2, 1f); }
 
         if(dyingCounter > i * 8) {
-            dying = false;
             alive = false;
         }
     }

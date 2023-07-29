@@ -47,6 +47,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[] obj = new Entity[10];
     public Entity[] npc = new Entity[10];
     public Entity[] monster = new Entity[20];
+    public ArrayList<Entity> projectileList = new ArrayList<>();
     ArrayList<Entity> entityList = new ArrayList<>();
 
     // Game state
@@ -127,6 +128,17 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
+
+            for (int i = 0; i < projectileList.size(); i++) {
+                if(projectileList.get(i) != null) {
+                    if(projectileList.get(i).alive) {
+                        projectileList.get(i).update();
+                    }
+                    if(!projectileList.get(i).alive) {
+                        projectileList.remove(i);
+                    }
+                }
+            }
         }
 
         if(gameState == pauseState) {
@@ -153,21 +165,27 @@ public class GamePanel extends JPanel implements Runnable {
             // add entities to the list
             entityList.add(player);
 
-            for (Entity en : npc) {
-                if (en != null) {
-                    entityList.add(en);
+            for (Entity entity : npc) {
+                if (entity != null) {
+                    entityList.add(entity);
                 }
             }
 
-            for (Entity en : obj) {
-                if (en != null) {
-                    entityList.add(en);
+            for (Entity entity : obj) {
+                if (entity != null) {
+                    entityList.add(entity);
                 }
             }
 
-            for (Entity en : monster) {
-                if (en != null) {
-                    entityList.add(en);
+            for (Entity entity : monster) {
+                if (entity != null) {
+                    entityList.add(entity);
+                }
+            }
+
+            for (Entity entity : projectileList) {
+                if (entity != null) {
+                    entityList.add(entity);
                 }
             }
 

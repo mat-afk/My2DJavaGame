@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.OBJ_Fireball;
 import object.OBJ_Key;
 import object.OBJ_ShieldWood;
 import object.OBJ_SwordNormal;
@@ -52,8 +53,12 @@ public class Player extends Entity {
 
         // Player Status
         level = 1;
+
         maxLife = 6;
         life = maxLife;
+        maxMana = 4;
+        mana = maxMana;
+
         strength = 1;
         dexterity = 1;
         exp = 0;
@@ -61,6 +66,7 @@ public class Player extends Entity {
         coin = 0;
         currentWeapon = new OBJ_SwordNormal(gp);
         currentShield = new OBJ_ShieldWood(gp);
+        projectile = new OBJ_Fireball(gp);
         attack = getAttack();
         defense = getDefense();
     }
@@ -190,12 +196,32 @@ public class Player extends Entity {
             }
         }
 
+        if(gp.keyH.shotKeyPressed && !projectile.alive
+                && shotAvailableCounter == 30 && projectile.haveResource(this)) {
+
+            // Set default coordinates, direction and user
+            projectile.set(worldX, worldY, direction, true, this);
+
+            // Substract the cost (Mana, AMMMO)
+            projectile.substractResource(this);
+
+            gp.projectileList.add(projectile);
+
+            shotAvailableCounter = 0;
+
+            gp.playSoundEffect(10);
+        }
+
         if(invincible) {
             invincibleCounter++;
             if(invincibleCounter > 60) {
                 invincible = false;
                 invincibleCounter = 0;
             }
+        }
+
+        if(shotAvailableCounter < 30) {
+            shotAvailableCounter++;
         }
     }
 
@@ -230,7 +256,7 @@ public class Player extends Entity {
 
             // Check monster collision with the updated data
             int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
-            damageMonster(monsterIndex);
+            damageMonster(monsterIndex, attack);
 
             // Restore the original data
             worldX = currentWorldX;
@@ -259,7 +285,7 @@ public class Player extends Entity {
                 text = "Got a " + gp.obj[i].name + "!";
 
             } else {
-                text = "You canoot carry any more!";
+                text = "You cannot carry any more!";
             }
 
             gp.ui.addMessage(text);
@@ -282,7 +308,7 @@ public class Player extends Entity {
 
         if(i != 999) {
 
-            if(!invincible) {
+            if(!invincible && !gp.monster[i].dying) {
                 gp.playSoundEffect(6);
 
                 int damage = gp.monster[i].attack - defense;
@@ -296,7 +322,7 @@ public class Player extends Entity {
         }
     }
 
-    public void damageMonster(int i) {
+    public void damageMonster(int i, int attack) {
 
         if(i != 999) {
 
