@@ -11,6 +11,7 @@ import javax.swing.plaf.DimensionUIResource;
 import entity.Entity;
 import entity.Player;
 import tile.TileManager;
+import tiles_interactive.InteractiveTile;
 
 public class GamePanel extends JPanel implements Runnable {
     
@@ -47,6 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[] obj = new Entity[20];
     public Entity[] npc = new Entity[10];
     public Entity[] monster = new Entity[20];
+    public InteractiveTile[] iTile = new InteractiveTile[50];
     public ArrayList<Entity> projectileList = new ArrayList<>();
     ArrayList<Entity> entityList = new ArrayList<>();
 
@@ -71,7 +73,8 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setObject();
         aSetter.setNPC();
         aSetter.setMonster();
-        // playMusic(0);
+        aSetter.setInteractiveTile();
+
         gameState = titleState;
     }
 
@@ -140,6 +143,12 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
+
+            for (InteractiveTile interactiveTile : iTile) {
+                if (interactiveTile != null) {
+                    interactiveTile.update();
+                }
+            }
         }
 
         if(gameState == pauseState) {
@@ -160,8 +169,16 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Title Screen
         if (gameState != titleState) {
+
             // Tile
             tileM.draw(g2);
+
+            // Interactive tile
+            for (InteractiveTile interactiveTile : iTile) {
+                if (interactiveTile != null) {
+                    interactiveTile.draw(g2);
+                }
+            }
 
             // add entities to the list
             entityList.add(player);
