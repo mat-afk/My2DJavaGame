@@ -33,28 +33,7 @@ public class AssetSetter {
         i++;
         gp.obj[i] = new OBJ_Axe(gp);
         gp.obj[i].worldX = gp.tileSize * 33;
-        gp.obj[i].worldY = gp.tileSize * 21;
-
-        i++;
-        gp.obj[i] = new OBJ_BlueShield(gp);
-        gp.obj[i].worldX = gp.tileSize * 35;
-        gp.obj[i].worldY = gp.tileSize * 21;
-
-        i++;
-        gp.obj[i] = new OBJ_Potion(gp);
-        gp.obj[i].worldX = gp.tileSize * 22;
-        gp.obj[i].worldY = gp.tileSize * 27;
-
-        i++;
-        gp.obj[i] = new OBJ_Heart(gp);
-        gp.obj[i].worldX = gp.tileSize * 22;
-        gp.obj[i].worldY = gp.tileSize * 29;
-
-        i++;
-        gp.obj[i] = new OBJ_ManaCrystal(gp);
-        gp.obj[i].worldX = gp.tileSize * 22;
-        gp.obj[i].worldY = gp.tileSize * 31;
-
+        gp.obj[i].worldY = gp.tileSize * 7;
     }
 
     public void setNPC() {
@@ -97,6 +76,9 @@ public class AssetSetter {
     public void setInteractiveTile() {
 
         int i = 0;
+        gp.iTile[i] = new IT_DryTree(gp, 31, 21);
+
+        i++;
         gp.iTile[i] = new IT_DryTree(gp, 27, 12);
 
         i++;
