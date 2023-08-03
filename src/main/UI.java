@@ -17,10 +17,8 @@ public class UI {
     Graphics2D g2;
     Font maruMonica;
     BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank;
-    public boolean messageOn = false;
     ArrayList<String> message = new ArrayList<>();
     ArrayList<Integer> messageCounter = new ArrayList<>();
-    public boolean gameFinished = false;
     public String currentDialogue = "";
     public int commandNum = 0;
     public int titleScreenState = 0;
@@ -173,10 +171,10 @@ public class UI {
 
     private void drawTitleScreen() {
 
-        if(titleScreenState == 0) {
+        g2.setColor(new Color(0, 0, 0));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
-            g2.setColor(new Color(0, 0, 0));
-            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        if(titleScreenState == 0) {
 
             // Title Name
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 96F));
@@ -223,6 +221,7 @@ public class UI {
             if(commandNum == 2) {
                 g2.drawString(">", x - gp.tileSize, y);
             }
+
         } else if(titleScreenState == 1) {
 
             // Class selection screen
@@ -297,7 +296,7 @@ public class UI {
     public void drawCharacterScreen() {
 
         // Create frame
-        final int frameX = gp.tileSize;
+        final int frameX = gp.tileSize * 2;
         final int frameY = gp.tileSize;
         final int frameWidth = gp.tileSize * 5;
         final int frameHeight = gp.tileSize * 10;
@@ -400,7 +399,7 @@ public class UI {
     public void drawInventory() {
 
         // Frame
-        final int frameX = gp.tileSize * 9;
+        final int frameX = gp.tileSize * 12;
         final int frameY = gp.tileSize;
         final int frameWidth = gp.tileSize * 6;
         final int frameHeight = gp.tileSize * 5;
