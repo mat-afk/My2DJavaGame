@@ -19,8 +19,8 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 3;
 
     public final int tileSize = originalTileSize * scale;  // 48x48
-    public final int maxScreenCol = 20;
-    public final int maxScreenRow = 12;
+    public final int maxScreenCol = 20; //5x4, 16x9, 21x9
+    public final int maxScreenRow = 12; //5x4, 16x9, 21x9
     public final int screenWidth = tileSize * maxScreenCol;  // 960px
     public final int screenHeight = tileSize * maxScreenRow;  // 576px
 
@@ -33,6 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
     int screenHeight2 = screenHeight;
     BufferedImage tempScreen;
     Graphics2D g2;
+    public boolean fullScreenOn = false;
 
     // Fps
     int FPS = 60;
@@ -40,12 +41,13 @@ public class GamePanel extends JPanel implements Runnable {
     // System
     TileManager tileM = new TileManager(this);
     public KeyHandler keyH = new KeyHandler(this);
-    Sound sound = new Sound();
+    Sound se = new Sound();
     Sound music = new Sound();
     public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
     public UI ui = new UI(this);
     public EventHandler eHandler = new EventHandler(this);
+    Config config = new Config(this);
     Thread gameThread;
 
     // Entity and object
@@ -65,6 +67,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int pauseState = 2;
     public final int dialogueState = 3;
     public final int characterState = 4;
+    public final int optionsState = 5;
 
     public GamePanel() {
 
@@ -86,7 +89,9 @@ public class GamePanel extends JPanel implements Runnable {
         tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D) tempScreen.getGraphics();
 
-        // setFullScreen();
+        if(fullScreenOn) {
+            setFullScreen();
+        }
     }
 
     public void setFullScreen() {
@@ -182,10 +187,6 @@ public class GamePanel extends JPanel implements Runnable {
                     interactiveTile.update();
                 }
             }
-        }
-
-        if(gameState == pauseState) {
-            stopMusic();
         }
     }
 
@@ -285,8 +286,12 @@ public class GamePanel extends JPanel implements Runnable {
         music.stop();
     }
 
+    public void resumeMusic() {
+        music.resume();
+    }
+
     public void playSoundEffect(int i) {
-        sound.setFile(i);
-        sound.play();
+        se.setFile(i);
+        se.play();
     }
 }
