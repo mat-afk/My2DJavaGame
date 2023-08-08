@@ -28,7 +28,7 @@ public class Projectile extends Entity {
 
             if(monsterIndex != 999) {
                 gp.player.damageMonster(monsterIndex, attack);
-                generateParticle(user.projectile, gp.monster[monsterIndex]);
+                generateParticle(user.projectile, gp.monster[gp.currentMap][monsterIndex]);
                 alive = false;
             }
         }
@@ -72,5 +72,5 @@ public class Projectile extends Entity {
         return false;
     }
 
-    public void substractResource(Entity user) { }
+    public void subtractResource(Entity user) { }
 }

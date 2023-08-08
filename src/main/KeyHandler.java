@@ -137,6 +137,13 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_T) {
             checkDrawTime = !checkDrawTime;
         }
+
+        if(code == KeyEvent.VK_R) {
+            switch(gp.currentMap) {
+                case 0: gp.tileM.loadMap("/maps/worldV2.txt", 0);
+                case 1: gp.tileM.loadMap("/maps/interior01.txt", 1);
+            }
+        }
     }
 
     public void pauseState(int code) {
@@ -285,7 +292,7 @@ public class KeyHandler implements KeyListener {
             if (gp.ui.commandNum == 0) {
                 gp.gameState = gp.playState;
                 gp.retry();
-
+                gp.playMusic(0);
                 // Quit
             } else if(gp.ui.commandNum == 1) {
                 gp.gameState = gp.titleState;

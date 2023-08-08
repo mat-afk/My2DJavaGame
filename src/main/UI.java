@@ -729,6 +729,7 @@ public class UI {
                 subState = 0;
                 gp.gameState = gp.titleState;
                 gp.ui.titleScreenState = 0;
+                gp.music.stop();
             }
         }
 
