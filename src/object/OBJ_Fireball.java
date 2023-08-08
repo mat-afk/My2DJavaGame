@@ -39,7 +39,7 @@ public class OBJ_Fireball extends Projectile {
         return user.mana >= useCost;
     }
 
-    public void substractResource(Entity user) {
+    public void subtractResource(Entity user) {
         user.mana -= useCost;
     }
 
