@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Entity {
@@ -20,7 +21,7 @@ public class Entity {
     public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collision = false;
-    String[] dialogues = new String[20];
+    public String[] dialogues = new String[20];
 
     // State
     public int worldX, worldY;
@@ -63,6 +64,8 @@ public class Entity {
     public Projectile projectile;
 
     // Item attributes
+    public ArrayList<Entity> inventory = new ArrayList<>();
+    public final int maxInventorySize = 20;
     public int attackValue;
     public int defenseValue;
     public String description = "";
@@ -190,7 +193,7 @@ public class Entity {
 
         spriteCounter++;
 
-        if(spriteCounter > 12) {
+        if(spriteCounter > 24) {
             if(spriteNum == 1) {
                 spriteNum = 2;
             } else if(spriteNum == 2) {

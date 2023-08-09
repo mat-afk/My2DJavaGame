@@ -6,6 +6,7 @@ public class EventHandler {
     EventRect[][][] eventRect;
     int previousEventX, previousEventY;
     boolean canTouchEvent = true;
+    int tempMap, tempCol, tempRow;
 
     public EventHandler(GamePanel gp) {
         this.gp = gp;
@@ -85,19 +86,11 @@ public class EventHandler {
         return hit;
     }
 
-    public void teleport(int gameState) {
-        gp.gameState = gameState;
-        gp.ui.currentDialogue = "Teleport!";
-        gp.player.worldX = gp.tileSize * 37;
-        gp.player.worldY = gp.tileSize * 10;
-    }
-
     public void teleport(int map, int col, int row) {
-        gp.currentMap = map;
-        gp.player.worldX = gp.tileSize * col;
-        gp.player.worldY = gp.tileSize * row;
-        previousEventX = gp.player.worldX;
-        previousEventY = gp.player.worldY;
+        gp.gameState = gp.transitionState;
+        tempMap = map;
+        tempCol = col;
+        tempRow = row;
         canTouchEvent = false;
         gp.playSoundEffect(13);
     }
