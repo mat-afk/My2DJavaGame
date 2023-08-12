@@ -15,5 +15,7 @@ public class OBJ_ShieldWood extends Entity {
         down1 = setup("/objects/shield_wood");
 
         defenseValue = 1;
+
+        price = 35;
     }
 }

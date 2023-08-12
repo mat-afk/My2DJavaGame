@@ -15,5 +15,7 @@ public class OBJ_BlueShield extends Entity {
         down1 = setup("/objects/shield_blue");
 
         defenseValue = 2;
+
+        price = 250;
     }
 }

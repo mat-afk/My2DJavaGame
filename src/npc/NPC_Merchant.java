@@ -23,7 +23,7 @@ public class NPC_Merchant extends Entity {
 
         getNPCImage();
         setDialogue();
-        setInventory();
+        setItems();
     }
 
     public void getNPCImage() {
@@ -41,7 +41,7 @@ public class NPC_Merchant extends Entity {
         dialogues[0] = "He he, so you found me.\nI have some good stuff.\nDo you want to trade?";
     }
 
-    public void setInventory() {
+    public void setItems() {
 
         inventory.add(new OBJ_Potion(gp));
         inventory.add(new OBJ_Key(gp));
@@ -49,5 +49,12 @@ public class NPC_Merchant extends Entity {
         inventory.add(new OBJ_Axe(gp));
         inventory.add(new OBJ_ShieldWood(gp));
         inventory.add(new OBJ_BlueShield(gp));
+    }
+
+    public void speak() {
+
+        super.speak();
+        gp.gameState = gp.tradeState;
+        gp.ui.npc = this;
     }
 }

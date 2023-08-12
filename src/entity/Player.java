@@ -58,12 +58,22 @@ public class Player extends Entity {
         dexterity = 1;
         exp = 0;
         nextLevelExp = 5;
-        coin = 0;
+        coin = 500;
         currentWeapon = new OBJ_SwordNormal(gp);
         currentShield = new OBJ_ShieldWood(gp);
         projectile = new OBJ_Fireball(gp);
         attack = getAttack();
         defense = getDefense();
+    }
+
+    public void setDefaultPositions() {
+
+        // worldX = gp.tileSize * 23;
+        // worldY = gp.tileSize * 21;
+        worldX = gp.tileSize * 12;
+        worldY = gp.tileSize * 12;
+        gp.currentMap = 1;
+        direction = "down";
     }
 
     private int getAttack() {
@@ -80,13 +90,6 @@ public class Player extends Entity {
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Key(gp));
-    }
-
-    public void setDefaultPositions() {
-
-        worldX = gp.tileSize * 23;
-        worldY = gp.tileSize * 21;
-        direction = "down";
     }
 
     public void restoreLifeAndMana() {
@@ -432,7 +435,7 @@ public class Player extends Entity {
 
     public void selectItem() {
 
-        int itemIndex = gp.ui.getItemIndexOnSlot();
+        int itemIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
 
         if(itemIndex < inventory.size()) {
 
