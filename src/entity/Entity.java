@@ -34,6 +34,7 @@ public class Entity {
     public boolean alive = true;
     public boolean dying = false;
     boolean hpBarOn = false;
+    public boolean knockBack = false;
 
     // Counter
     public int spriteCounter = 0;
@@ -42,9 +43,11 @@ public class Entity {
     public int shotAvailableCounter = 0;
     int dyingCounter = 0;
     int hpBarCounter = 0;
+    int knockBackCounter = 0;
 
     // Character Attributes
     public String name;
+    public int defaultSpeed;
     public int speed;
     public int maxLife;
     public int life;
@@ -71,6 +74,7 @@ public class Entity {
     public String description = "";
     public int useCost;
     public int price;
+    public int knockBackPower = 0;
 
     // Type
     public int type = 0;
@@ -168,9 +172,7 @@ public class Entity {
         }
     }
 
-    public void update() {
-        setAction();
-
+    public void checkCollision() {
         collisionOn = false;
         gp.cChecker.checkTile(this);
         gp.cChecker.checkObject(this, false);
@@ -182,13 +184,44 @@ public class Entity {
         if(this.type == typeMonster && contactPlayer) {
             damagePlayer(attack);
         }
+    }
 
-        if(!collisionOn) {
-            switch (direction) {
-                case "up" -> worldY -= speed;
-                case "down" -> worldY += speed;
-                case "left" -> worldX -= speed;
-                case "right" -> worldX += speed;
+    public void update() {
+        if(knockBack) {
+            checkCollision();
+
+            if(collisionOn) {
+                knockBackCounter = 0;
+                knockBack = false;
+                speed = defaultSpeed;
+
+            } else {
+                switch(gp.player.direction) {
+                    case "up" -> worldY -= speed;
+                    case "down" -> worldY += speed;
+                    case "left" -> worldX -= speed;
+                    case "right" -> worldX += speed;
+                }
+            }
+
+            knockBackCounter++;
+            if(knockBackCounter == 10) {
+                knockBackCounter = 0;
+                knockBack = false;
+                speed = defaultSpeed;
+            }
+        }
+        else {
+            setAction();
+            checkCollision();
+
+            if(!collisionOn) {
+                switch (direction) {
+                    case "up" -> worldY -= speed;
+                    case "down" -> worldY += speed;
+                    case "left" -> worldX -= speed;
+                    case "right" -> worldX += speed;
+                }
             }
         }
 
