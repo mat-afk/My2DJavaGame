@@ -7,6 +7,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.plaf.DimensionUIResource;
 
+import AI.PathFinder;
 import entity.Entity;
 import entity.Player;
 import tile.TileManager;
@@ -41,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
     int FPS = 60;
 
     // System
-    TileManager tileM = new TileManager(this);
+    public TileManager tileM = new TileManager(this);
     public KeyHandler keyH = new KeyHandler(this);
     Sound se = new Sound();
     Sound music = new Sound();
@@ -49,6 +50,7 @@ public class GamePanel extends JPanel implements Runnable {
     public AssetSetter aSetter = new AssetSetter(this);
     public UI ui = new UI(this);
     public EventHandler eHandler = new EventHandler(this);
+    public PathFinder pFinder = new PathFinder(this);
     Config config = new Config(this);
     Thread gameThread;
 
