@@ -21,6 +21,16 @@ public class AssetSetter {
         gp.obj[mapNum][i] = new OBJ_Axe(gp);
         gp.obj[mapNum][i].worldX = gp.tileSize * 33;
         gp.obj[mapNum][i].worldY = gp.tileSize * 7;
+
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Door(gp);
+        gp.obj[mapNum][i].worldX = gp.tileSize * 14;
+        gp.obj[mapNum][i].worldY = gp.tileSize * 28;
+
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Chest(gp, new OBJ_Key(gp));
+        gp.obj[mapNum][i].worldX = gp.tileSize * 30;
+        gp.obj[mapNum][i].worldY = gp.tileSize * 27;
     }
 
     public void setNPC() {
@@ -75,6 +85,38 @@ public class AssetSetter {
 
         int i = 0;
         gp.iTile[mapNum][i] = new IT_DryTree(gp, 31, 21);
+
+        // Chest way
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 30, 29);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 29, 29);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 28, 29);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 28, 28);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 28, 27);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 27, 27);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 27, 26);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 27, 25);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 26, 25);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 25, 25);
 
         // Axe way
 

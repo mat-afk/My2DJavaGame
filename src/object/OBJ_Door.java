@@ -10,6 +10,7 @@ public class OBJ_Door extends Entity {
 
         name = "Door";
         down1 = setup("/objects/door");
+        type = typeObstacle;
 
         collision = true;
 
@@ -19,5 +20,12 @@ public class OBJ_Door extends Entity {
         solidArea.height = 32;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+    }
+
+    @Override
+    public void interact() {
+
+        gp.gameState = gp.dialogueState;
+        gp.ui.currentDialogue = "You need a key to open this!";
     }
 }

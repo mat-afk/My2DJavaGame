@@ -21,11 +21,13 @@ public class OBJ_Heart extends Entity {
         image3 = setup("/objects/heart_blank");
     }
 
-    public void use(Entity entity) {
+    public boolean use(Entity entity) {
 
         gp.playSoundEffect(2);
 
         gp.ui.addMessage("Life +" + heal);
         entity.life += heal;
+
+        return true;
     }
 }

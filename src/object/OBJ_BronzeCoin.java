@@ -16,10 +16,12 @@ public class OBJ_BronzeCoin extends Entity {
         down1 = setup("/objects/coin_bronze");
     }
 
-    public void use(Entity entity) {
+    public boolean use(Entity entity) {
 
         gp.playSoundEffect(1);
         gp.ui.addMessage("Coin +" + value);
         gp.player.coin += value;
+
+        return true;
     }
 }

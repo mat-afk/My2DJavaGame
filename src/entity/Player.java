@@ -135,24 +135,22 @@ public class Player extends Entity {
 
     public void update() {
 
-        if(attacking) {
+        if (attacking) {
             attacking();
-        }
+        } else if (keyH.upPressed || keyH.downPressed
+                || keyH.leftPressed || keyH.rightPressed
+                || keyH.enterPressed) {
 
-        else if(keyH.upPressed || keyH.downPressed
-        || keyH.leftPressed || keyH.rightPressed
-        || keyH.enterPressed) {
-            
-            if(keyH.upPressed)
+            if (keyH.upPressed)
                 direction = "up";
 
-            if(keyH.downPressed)
+            if (keyH.downPressed)
                 direction = "down";
 
-            if(keyH.leftPressed)
+            if (keyH.leftPressed)
                 direction = "left";
 
-            if(keyH.rightPressed)
+            if (keyH.rightPressed)
                 direction = "right";
 
             // Check tile collision
@@ -162,11 +160,12 @@ public class Player extends Entity {
 
             // Check object collision
             int objIndex = gp.cChecker.checkObject(this, true);
+            interactObject(objIndex);
             pickUpObject(objIndex);
 
             // Check npc collision
             int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
-            InteractNPC(npcIndex);
+            interactNPC(npcIndex);
 
             // Check monster collision
             int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
@@ -176,7 +175,7 @@ public class Player extends Entity {
             gp.eHandler.checkEvent();
 
             // if collision is false, player can move
-            if(!collisionOn && !keyH.enterPressed) {
+            if (!collisionOn && !keyH.enterPressed) {
                 switch (direction) {
                     case "up" -> worldY -= speed;
                     case "down" -> worldY += speed;
@@ -185,7 +184,7 @@ public class Player extends Entity {
                 }
             }
 
-            if(keyH.enterPressed && !attackCanceled) {
+            if (keyH.enterPressed && !attackCanceled) {
                 gp.playSoundEffect(7);
                 attacking = true;
                 spriteCounter = 0;
@@ -196,11 +195,11 @@ public class Player extends Entity {
 
             spriteCounter++;
 
-            if(spriteCounter > 12) {
+            if (spriteCounter > 12) {
 
-                if(spriteNum == 1) {
+                if (spriteNum == 1) {
                     spriteNum = 2;
-                } else if(spriteNum == 2) {
+                } else if (spriteNum == 2) {
                     spriteNum = 1;
                 }
 
@@ -208,7 +207,7 @@ public class Player extends Entity {
             }
         }
 
-        if(gp.keyH.shotKeyPressed && !projectile.alive
+        if (gp.keyH.shotKeyPressed && !projectile.alive
                 && shotAvailableCounter == 30 && projectile.haveResource(this)) {
 
             // Set default coordinates, direction and user
@@ -217,8 +216,8 @@ public class Player extends Entity {
             // Subtract the cost (Mana, AMMO)
             projectile.subtractResource(this);
 
-            for(int i = 0; i < gp.projectile[1].length; i++) {
-                if(gp.projectile[gp.currentMap][i] == null) {
+            for (int i = 0; i < gp.projectile[1].length; i++) {
+                if (gp.projectile[gp.currentMap][i] == null) {
                     gp.projectile[gp.currentMap][i] = projectile;
                     break;
                 }
@@ -229,27 +228,27 @@ public class Player extends Entity {
             gp.playSoundEffect(10);
         }
 
-        if(invincible) {
+        if (invincible) {
             invincibleCounter++;
-            if(invincibleCounter > 60) {
+            if (invincibleCounter > 60) {
                 invincible = false;
                 invincibleCounter = 0;
             }
         }
 
-        if(shotAvailableCounter < 30) {
+        if (shotAvailableCounter < 30) {
             shotAvailableCounter++;
         }
 
-        if(life > maxLife) {
+        if (life > maxLife) {
             life = maxLife;
         }
 
-        if(mana > maxMana) {
+        if (mana > maxMana) {
             mana = maxMana;
         }
 
-        if(life <= 0) {
+        if (life <= 0) {
             gp.gameState = gp.gameOverState;
             gp.player.invincible = false;
             gp.ui.commandNum = -1;
@@ -311,39 +310,55 @@ public class Player extends Entity {
         }
     }
 
+    public boolean inventoryIsFull() {
+        return inventory.size() == maxInventorySize;
+    }
+
     public void pickUpObject(int i) {
 
         if(i != 999) {
+            if(gp.obj[gp.currentMap][i].type != typeObstacle) {
+                // Pickup only items
+                if (gp.obj[gp.currentMap][i].type == typePickup) {
 
-            // Pickup only items
-            if(gp.obj[gp.currentMap][i].type == typePickup) {
-
-                gp.obj[gp.currentMap][i].use(this);
-
-            } else {
-
-                // Inventory items
-
-                String text;
-
-                if(inventory.size() != maxInventorySize) {
-
-                    inventory.add(gp.obj[gp.currentMap][i]);
-                    gp.playSoundEffect(1);
-                    text = "Got a " + gp.obj[gp.currentMap][i].name + "!";
+                    gp.obj[gp.currentMap][i].use(this);
 
                 } else {
-                    text = "You cannot carry any more!";
+
+                    // Inventory items
+
+                    String text;
+
+                    if (!inventoryIsFull()) {
+
+                        inventory.add(gp.obj[gp.currentMap][i]);
+                        gp.playSoundEffect(1);
+                        text = "Got a " + gp.obj[gp.currentMap][i].name + "!";
+
+                    } else {
+                        text = "You cannot carry any more!";
+                    }
+
+                    gp.ui.addMessage(text);
                 }
 
-                gp.ui.addMessage(text);
+                gp.obj[gp.currentMap][i] = null;
             }
-
-            gp.obj[gp.currentMap][i] = null;
         }
     }
 
-    public void InteractNPC(int i) {
+    public void interactObject(int i) {
+        if(i != 999) {
+            attackCanceled = true;
+            if(gp.obj[gp.currentMap][i].type == typeObstacle) {
+                if(keyH.enterPressed) {
+                    gp.obj[gp.currentMap][i].interact();
+                }
+            }
+        }
+    }
+
+    public void interactNPC(int i) {
 
         if(gp.keyH.enterPressed) {
             if(i != 999) {
@@ -480,8 +495,9 @@ public class Player extends Entity {
             }
 
             if(selectedItem.type == typeConsumable) {
-                selectedItem.use(this);
-                inventory.remove(itemIndex);
+                if(selectedItem.use(this)) {
+                    inventory.remove(itemIndex);
+                }
             }
         }
     }

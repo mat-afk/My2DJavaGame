@@ -20,11 +20,13 @@ public class OBJ_ManaCrystal extends Entity {
         image2 = setup("/objects/manacrystal_blank");
     }
 
-    public void use(Entity entity) {
+    public boolean use(Entity entity) {
 
         gp.playSoundEffect(2);
 
         gp.ui.addMessage("Mana +" + mana);
         entity.mana += mana;
+
+        return true;
     }
 }
