@@ -326,12 +326,10 @@ public class Player extends Entity {
                 } else {
 
                     // Inventory items
-
                     String text;
 
-                    if (!inventoryIsFull()) {
+                    if(canObtainItem(gp.obj[gp.currentMap][i])) {
 
-                        inventory.add(gp.obj[gp.currentMap][i]);
                         gp.playSoundEffect(1);
                         text = "Got a " + gp.obj[gp.currentMap][i].name + "!";
 
@@ -496,10 +494,58 @@ public class Player extends Entity {
 
             if(selectedItem.type == typeConsumable) {
                 if(selectedItem.use(this)) {
-                    inventory.remove(itemIndex);
+                    if(selectedItem.amount > 1) {
+                        selectedItem.amount--;
+                    } else {
+                        inventory.remove(itemIndex);
+                    }
                 }
             }
         }
+    }
+
+    public int searchItemInInventory(String itemName) {
+
+        int itemIndex = 999;
+
+        for(int i = 0; i < inventory.size(); i++) {
+            if(inventory.get(i).name.equals(itemName)) {
+                itemIndex = i;
+                break;
+            }
+        }
+
+        return itemIndex;
+    }
+
+    public boolean canObtainItem(Entity item) {
+
+        boolean canObtain = false;
+
+        // Check if item is stackable
+        if(item.stackable) {
+            int index = searchItemInInventory(item.name);
+
+            if(index != 999) {
+                inventory.get(index).amount++;
+                canObtain = true;
+            }
+            else {
+                // New item
+                if(!inventoryIsFull()) {
+                    inventory.add(item);
+                    canObtain = true;
+                }
+            }
+        } else {
+            // Item not stackable
+            if(!inventoryIsFull()) {
+                inventory.add(item);
+                canObtain = true;
+            }
+        }
+
+        return canObtain;
     }
 
     public void draw(Graphics2D g2) {

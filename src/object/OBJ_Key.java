@@ -12,6 +12,7 @@ public class OBJ_Key extends Entity {
         description = "[" + name + "]\nIt opens a door.";
         down1 = setup("/objects/key");
         type = typeConsumable;
+        stackable = true;
 
         price = 100;
     }

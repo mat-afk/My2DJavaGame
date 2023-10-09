@@ -16,6 +16,7 @@ public class OBJ_Potion extends Entity {
         heal = 5;
         description = "[" + name + "]\nHeals your life by " + heal + ".";
         down1 = setup("/objects/potion_red");
+        stackable = true;
 
         price = 25;
     }
