@@ -3,9 +3,6 @@ package environment;
 import main.GamePanel;
 
 import java.awt.*;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class Lighting {
@@ -13,73 +10,73 @@ public class Lighting {
     GamePanel gp;
     BufferedImage darknessFilter;
 
-    public Lighting(GamePanel gp, int circleSize) {
+    public Lighting(GamePanel gp) {
         this.gp = gp;
+        setLightSource();
+    }
 
+    public void setLightSource() {
         darknessFilter = new BufferedImage(gp.screenWidth, gp.screenHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = (Graphics2D) darknessFilter.getGraphics();
 
-        // Create a screen-sized rectangle area
-        Area screenArea = new Area(new Rectangle2D.Double(0, 0, gp.screenWidth, gp.screenHeight));
+        if(gp.player.currentLight == null) {
+            g2.setColor(new Color(0, 0, 0, 0.96f));
+        }
+        else {
 
-        // Get center x and y of the light circle
-        int centerX = gp.player.screenX + (gp.tileSize / 2);
-        int centerY = gp.player.screenY + (gp.tileSize / 2);
+            // Get center x and y of the light circle
+            int centerX = gp.player.screenX + (gp.tileSize / 2);
+            int centerY = gp.player.screenY + (gp.tileSize / 2);
 
-        // Get the top left x and y of the light circle
-        double x = centerX - (circleSize / 2.0);
-        double y = centerY - (circleSize / 2.0);
+            // Create a gradation effect
+            Color[] color = new Color[12];
+            float[] fraction = new float[12];
 
-        Shape circleShape = new Ellipse2D.Double(x, y, circleSize, circleSize);
+            color[0] = new Color(0, 0, 0, 0.1f);
+            color[1] = new Color(0, 0, 0, 0.42f);
+            color[2] = new Color(0, 0, 0, 0.52f);
+            color[3] = new Color(0, 0, 0, 0.61f);
+            color[4] = new Color(0, 0, 0, 0.69f);
+            color[5] = new Color(0, 0, 0, 0.76f);
+            color[6] = new Color(0, 0, 0, 0.82f);
+            color[7] = new Color(0, 0, 0, 0.87f);
+            color[8] = new Color(0, 0, 0, 0.91f);
+            color[9] = new Color(0, 0, 0, 0.93f);
+            color[10] = new Color(0, 0, 0, 0.95f);
+            color[11] = new Color(0, 0, 0, 0.96f);
 
-        Area lightArea = new Area(circleShape);
+            fraction[0] = 0f;
+            fraction[1] = 0.4f;
+            fraction[2] = 0.5f;
+            fraction[3] = 0.6f;
+            fraction[4] = 0.65f;
+            fraction[5] = 0.7f;
+            fraction[6] = 0.75f;
+            fraction[7] = 0.8f;
+            fraction[8] = 0.85f;
+            fraction[9] = 0.9f;
+            fraction[10] = 0.95f;
+            fraction[11] = 1f;
 
-        // Subtract the areas
-        screenArea.subtract(lightArea);
+            // Create a gradation paint settings
+            RadialGradientPaint gPaint = new RadialGradientPaint(
+                    (float) centerX, (float) centerY, (float) gp.player.currentLight.lightRadius, fraction, color);
 
-        // Create a gradation effect
-        Color[] color = new Color[12];
-        float[] fraction = new float[12];
+            // Set the gradation data on g2
+            g2.setPaint(gPaint);
+        }
 
-        color[0] = new Color(0, 0, 0, 0.1f);
-        color[1] = new Color(0, 0, 0, 0.42f);
-        color[2] = new Color(0, 0, 0, 0.52f);
-        color[3] = new Color(0, 0, 0, 0.61f);
-        color[4] = new Color(0, 0, 0, 0.69f);
-        color[5] = new Color(0, 0, 0, 0.76f);
-        color[6] = new Color(0, 0, 0, 0.82f);
-        color[7] = new Color(0, 0, 0, 0.87f);
-        color[8] = new Color(0, 0, 0, 0.91f);
-        color[9] = new Color(0, 0, 0, 0.94f);
-        color[10] = new Color(0, 0, 0, 0.96f);
-        color[11] = new Color(0, 0, 0, 0.98f);
-
-        fraction[0] = 0f;
-        fraction[1] = 0.4f;
-        fraction[2] = 0.5f;
-        fraction[3] = 0.6f;
-        fraction[4] = 0.65f;
-        fraction[5] = 0.7f;
-        fraction[6] = 0.75f;
-        fraction[7] = 0.8f;
-        fraction[8] = 0.85f;
-        fraction[9] = 0.9f;
-        fraction[10] = 0.95f;
-        fraction[11] = 1f;
-
-        // Create a gradation paint settings
-        RadialGradientPaint gPaint = new RadialGradientPaint(
-                (float) centerX, (float) centerY, (float) (circleSize / 2.0), fraction, color);
-
-        // Set the gradation data on g2
-        g2.setPaint(gPaint);
-
-        // Draw the light circle
-        g2.fill(lightArea);
-
-        g2.fill(screenArea);
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
         g2.dispose();
+    }
+
+    public void update() {
+
+        if(gp.player.lightUpdated) {
+            setLightSource();
+            gp.player.lightUpdated = false;
+        }
     }
 
     public void draw(Graphics2D g2) {
