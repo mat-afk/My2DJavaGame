@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 public class Entity {
 
@@ -22,6 +23,7 @@ public class Entity {
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collision = false;
     public String[] dialogues = new String[20];
+    public Entity attacker;
 
     // State
     public int worldX, worldY;
@@ -36,6 +38,7 @@ public class Entity {
     boolean hpBarOn = false;
     public boolean onPath = false;
     public boolean knockBack = false;
+    public String knockBackDirection;
 
     // Counter
     public int spriteCounter = 0;
@@ -63,6 +66,8 @@ public class Entity {
     public int exp;
     public int nextLevelExp;
     public int coin;
+    public int motion1Duration;
+    public int motion2Duration;
     public Entity currentWeapon;
     public Entity currentShield;
     public Entity currentLight;
@@ -120,6 +125,26 @@ public class Entity {
 
     public int getRow() {
         return (worldY + solidArea.y) / gp.tileSize;
+    }
+
+    public int getXDistance(Entity target) {
+        return Math.abs(worldX - target.worldX);
+    }
+
+    public int getYDistance(Entity target) {
+        return Math.abs(worldY - target.worldY);
+    }
+
+    public int getTileDistance(Entity target) {
+        return (getXDistance(target) + getYDistance(target)) / gp.tileSize;
+    }
+
+    public int getGoalCol(Entity target) {
+        return (target.worldX + target.solidArea.x) / gp.tileSize;
+    }
+
+    public int getGoalRow(Entity target) {
+        return (target.worldY + target.solidArea.y) / gp.tileSize;
     }
 
     public void setAction() { }
@@ -192,6 +217,61 @@ public class Entity {
         gp.particleList.add(p4);
     }
 
+    public void checkStartChasing(Entity target, int distance, int rate) {
+
+        if(getTileDistance(target) < distance) {
+            int i = new Random().nextInt(rate);
+            if(i == 0) {
+                onPath = true;
+            }
+        }
+    }
+
+    public void checkStopChasing(Entity target, int distance, int rate) {
+
+        if(getTileDistance(target) > distance) {
+            int i = new Random().nextInt(rate);
+            if(i == 0) {
+                onPath = false;
+            }
+        }
+    }
+
+    public void checkShot(int rate, int shotInterval) {
+        // Check if it shots a projectile
+        int i = new Random().nextInt(rate);
+
+        if(i == 0 && !projectile.alive && shotAvailableCounter == shotInterval) {
+            projectile.set(worldX, worldY, direction, true, this);
+
+            for(int j = 0; j < gp.projectile[1].length; j++) {
+                if(gp.projectile[gp.currentMap][j] == null) {
+                    gp.projectile[gp.currentMap][j] = projectile;
+                    break;
+                }
+            }
+
+            shotAvailableCounter = 0;
+        }
+    }
+
+    public void getRandomDirection() {
+
+        actionLockCounter++;
+
+        if(actionLockCounter == 120) {
+            Random random = new Random();
+            int i = random.nextInt(100) + 1;
+
+            if(i <= 25) direction = "up";
+            if(i > 25 && i <= 50) direction = "down";
+            if(i > 50 && i <= 75) direction = "left";
+            if(i > 75) direction = "right";
+
+            actionLockCounter = 0;
+        }
+    }
+
     public void damagePlayer(int attack) {
         if(!gp.player.invincible) {
             gp.playSoundEffect(6);
@@ -203,6 +283,14 @@ public class Entity {
             gp.player.life -= damage;
             gp.player.invincible = true;
         }
+    }
+
+    public void setKnockBack(Entity target, Entity attacker, int knockBackPower) {
+
+        this.attacker = attacker;
+        target.knockBackDirection = attacker.direction;
+        target.speed += knockBackPower;
+        target.knockBack = true;
     }
 
     public void searchPath(int goalCol, int goalRow) {
@@ -372,6 +460,109 @@ public class Entity {
         return index;
     }
 
+    public void checkAttack(int rate, int straight, int horizontal) {
+
+        boolean targetInRange = false;
+
+        int xDistance = getXDistance(gp.player);
+        int yDistance = getYDistance(gp.player);
+
+        switch(direction) {
+            case "up" -> {
+                if(gp.player.worldY < worldY && yDistance < straight && xDistance < horizontal) {
+                    targetInRange = true;
+                }
+            }
+            case "down" -> {
+                if(gp.player.worldY > worldY && yDistance < straight && xDistance < horizontal) {
+                    targetInRange = true;
+                }
+            }
+            case "left" -> {
+                if(gp.player.worldX < worldX && xDistance < straight && yDistance < horizontal) {
+                    targetInRange = true;
+                }
+            }
+            case "right" -> {
+                if(gp.player.worldX > worldX && xDistance < straight && yDistance < horizontal) {
+                    targetInRange = true;
+                }
+            }
+        }
+
+        if(targetInRange) {
+            // Check if it initiates an attack
+            int i = new Random().nextInt(rate);
+            if(i == 0) {
+                attacking = true;
+                spriteNum = 1;
+                spriteCounter = 0;
+                shotAvailableCounter = 0;
+            }
+        }
+    }
+
+    public void attacking() {
+        spriteCounter++;
+
+        if(spriteCounter <= motion1Duration) {
+            spriteNum = 1;
+        }
+
+        if(spriteCounter > motion1Duration && spriteCounter <= motion2Duration) {
+            spriteNum = 2;
+
+            // Save the current data
+            int currentWorldX = worldX;
+            int currentWorldY = worldY;
+            int solidAreaWidth = solidArea.width;
+            int solidAreaHeight = solidArea.height;
+
+            // Adjust player's worldX/Y for the attackArea
+
+            switch (direction) {
+                case "up" -> worldY -= attackArea.height;
+                case "down" -> worldY += attackArea.height;
+                case "left" -> worldX -= attackArea.width;
+                case "right" -> worldX += attackArea.width;
+            }
+
+            // attackArea become solidArea
+            solidArea.width = attackArea.width;
+            solidArea.height= attackArea.height;
+
+            if(type == typeMonster) {
+
+                if(gp.cChecker.checkPlayer(this)) {
+                    damagePlayer(attack);
+                }
+            }
+            else {
+                // Check monster collision with the updated data
+                int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+                gp.player.damageMonster(monsterIndex, this, attack, currentWeapon.knockBackPower);
+
+                int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+                gp.player.damageInteractiveTile(iTileIndex);
+
+                int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+                gp.player.damageProjectile(projectileIndex);
+            }
+
+            // Restore the original data
+            worldX = currentWorldX;
+            worldY = currentWorldY;
+            solidArea.width = solidAreaWidth;
+            solidArea.height = solidAreaHeight;
+        }
+
+        if(spriteCounter > motion2Duration) {
+            spriteNum = 1;
+            spriteCounter = 0;
+            attacking = false;
+        }
+    }
+
     public void checkCollision() {
         collisionOn = false;
         gp.cChecker.checkTile(this);
@@ -387,6 +578,7 @@ public class Entity {
     }
 
     public void update() {
+
         if(knockBack) {
             checkCollision();
 
@@ -396,7 +588,7 @@ public class Entity {
                 speed = defaultSpeed;
 
             } else {
-                switch(gp.player.direction) {
+                switch(knockBackDirection) {
                     case "up" -> worldY -= speed;
                     case "down" -> worldY += speed;
                     case "left" -> worldX -= speed;
@@ -411,29 +603,32 @@ public class Entity {
                 speed = defaultSpeed;
             }
         }
+        else if(attacking) {
+            attacking();
+        }
         else {
             setAction();
             checkCollision();
 
             if(!collisionOn) {
-                switch (direction) {
+                switch(direction) {
                     case "up" -> worldY -= speed;
                     case "down" -> worldY += speed;
                     case "left" -> worldX -= speed;
                     case "right" -> worldX += speed;
                 }
             }
-        }
 
-        spriteCounter++;
+            spriteCounter++;
 
-        if(spriteCounter > 24) {
-            if(spriteNum == 1) {
-                spriteNum = 2;
-            } else if(spriteNum == 2) {
-                spriteNum = 1;
+            if(spriteCounter > 24) {
+                if(spriteNum == 1) {
+                    spriteNum = 2;
+                } else if(spriteNum == 2) {
+                    spriteNum = 1;
+                }
+                spriteCounter = 0;
             }
-            spriteCounter = 0;
         }
 
         if(invincible) {
@@ -460,22 +655,51 @@ public class Entity {
                 worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
                 worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 
+            int tempScreenX = screenX;
+            int tempScreenY = screenY;
+
             switch (direction) {
                 case "up" -> {
-                    if (spriteNum == 1) image = up1;
-                    if (spriteNum == 2) image = up2;
+                    if(!attacking) {
+                        if (spriteNum == 1) image = up1;
+                        if (spriteNum == 2) image = up2;
+                    }
+                    if(attacking) {
+                        tempScreenY = screenY - gp.tileSize;
+                        if (spriteNum == 1) image = attackUp1;
+                        if (spriteNum == 2) image = attackUp2;
+                    }
                 }
                 case "down" -> {
-                    if (spriteNum == 1) image = down1;
-                    if (spriteNum == 2) image = down2;
+                    if(!attacking) {
+                        if (spriteNum == 1) image = down1;
+                        if (spriteNum == 2) image = down2;
+                    }
+                    if(attacking) {
+                        if (spriteNum == 1) image = attackDown1;
+                        if (spriteNum == 2) image = attackDown2;
+                    }
                 }
                 case "left" -> {
-                    if (spriteNum == 1) image = left1;
-                    if (spriteNum == 2) image = left2;
+                    if(!attacking) {
+                        if (spriteNum == 1) image = left1;
+                        if (spriteNum == 2) image = left2;
+                    }
+                    if(attacking) {
+                        tempScreenX = screenX - gp.tileSize;
+                        if (spriteNum == 1) image = attackLeft1;
+                        if (spriteNum == 2) image = attackLeft2;
+                    }
                 }
                 case "right" -> {
-                    if (spriteNum == 1) image = right1;
-                    if (spriteNum == 2) image = right2;
+                    if(!attacking) {
+                        if (spriteNum == 1) image = right1;
+                        if (spriteNum == 2) image = right2;
+                    }
+                    if(attacking) {
+                        if (spriteNum == 1) image = attackRight1;
+                        if (spriteNum == 2) image = attackRight2;
+                    }
                 }
             }
 
@@ -508,7 +732,7 @@ public class Entity {
                 dyingAnimation(g2);
             }
 
-            g2.drawImage(image, screenX, screenY, null);
+            g2.drawImage(image, tempScreenX, tempScreenY, null);
 
             changeAlpha(g2, 1f);
         }

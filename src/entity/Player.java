@@ -5,10 +5,7 @@ import java.awt.image.BufferedImage;
 
 import main.GamePanel;
 import main.KeyHandler;
-import object.OBJ_Fireball;
-import object.OBJ_Key;
-import object.OBJ_ShieldWood;
-import object.OBJ_SwordNormal;
+import object.*;
 
 public class Player extends Entity {
 
@@ -69,7 +66,6 @@ public class Player extends Entity {
     }
 
     public void setDefaultPositions() {
-
         worldX = gp.tileSize * 23;
         worldY = gp.tileSize * 21;
         gp.currentMap = 0;
@@ -78,6 +74,8 @@ public class Player extends Entity {
 
     private int getAttack() {
         attackArea = currentWeapon.attackArea;
+        motion1Duration = currentWeapon.motion1Duration;
+        motion2Duration = currentWeapon.motion2Duration;
         return strength * currentWeapon.attackValue;
     }
 
@@ -90,6 +88,7 @@ public class Player extends Entity {
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Key(gp));
+        inventory.add(new OBJ_Axe(gp));
     }
 
     public void restoreLifeAndMana() {
@@ -262,6 +261,7 @@ public class Player extends Entity {
 
         if (life <= 0) {
             gp.gameState = gp.gameOverState;
+            gp.player.attackCanceled = true;
             gp.player.invincible = false;
             gp.ui.commandNum = -1;
             gp.stopMusic();
@@ -269,61 +269,8 @@ public class Player extends Entity {
         }
     }
 
-    public void attacking() {
-        spriteCounter++;
-
-        if(spriteCounter <= 5) {
-            spriteNum = 1;
-        }
-
-        if(spriteCounter > 5 && spriteCounter <= 25) {
-            spriteNum = 2;
-
-            // Save the current data
-            int currentWorldX = worldX;
-            int currentWorldY = worldY;
-            int solidAreaWidth = solidArea.width;
-            int solidAreaHeight = solidArea.height;
-
-            // Adjust player's worldX/Y for the attackArea
-
-            switch (direction) {
-                case "up" -> worldY -= attackArea.height;
-                case "down" -> worldY += attackArea.height;
-                case "left" -> worldX -= attackArea.width;
-                case "right" -> worldX += attackArea.width;
-            }
-
-            // attackArea become solidArea
-            solidArea.width = attackArea.width;
-            solidArea.height= attackArea.height;
-
-            // Check monster collision with the updated data
-            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
-            damageMonster(monsterIndex, attack, currentWeapon.knockBackPower);
-
-            int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-            damageInteractiveTile(iTileIndex);
-
-            int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
-            damageProjectile(projectileIndex);
-
-            // Restore the original data
-            worldX = currentWorldX;
-            worldY = currentWorldY;
-            solidArea.width = solidAreaWidth;
-            solidArea.height = solidAreaHeight;
-        }
-
-        if(spriteCounter > 25) {
-            spriteNum = 1;
-            spriteCounter = 0;
-            attacking = false;
-        }
-    }
-
-    public boolean inventoryIsFull() {
-        return inventory.size() == maxInventorySize;
+    public boolean inventoryIsNotFull() {
+        return inventory.size() != maxInventorySize;
     }
 
     public void pickUpObject(int i) {
@@ -397,7 +344,7 @@ public class Player extends Entity {
         }
     }
 
-    public void damageMonster(int i, int attack, int knockBackPower) {
+    public void damageMonster(int i, Entity attacker, int attack, int knockBackPower) {
 
         if(i != 999) {
 
@@ -405,7 +352,7 @@ public class Player extends Entity {
                 gp.playSoundEffect(5);
 
                 if(knockBackPower > 0) {
-                    knockBack(gp.monster[gp.currentMap][i], knockBackPower);
+                    setKnockBack(gp.monster[gp.currentMap][i], attacker, knockBackPower);
                 }
 
                 int damage = attack - gp.monster[gp.currentMap][i].defense;
@@ -431,13 +378,6 @@ public class Player extends Entity {
                 }
             }
         }
-    }
-
-    public void knockBack(Entity entity, int knockBackPower) {
-
-        entity.direction = direction;
-        entity.speed += knockBackPower;
-        entity.knockBack = true;
     }
 
     public void damageInteractiveTile(int i) {
@@ -554,14 +494,14 @@ public class Player extends Entity {
             }
             else {
                 // New item
-                if(!inventoryIsFull()) {
+                if(inventoryIsNotFull()) {
                     inventory.add(item);
                     canObtain = true;
                 }
             }
         } else {
             // Item not stackable
-            if(!inventoryIsFull()) {
+            if(inventoryIsNotFull()) {
                 inventory.add(item);
                 canObtain = true;
             }
