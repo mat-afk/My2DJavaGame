@@ -53,6 +53,7 @@ public class GamePanel extends JPanel implements Runnable {
     public EventHandler eHandler = new EventHandler(this);
     public PathFinder pFinder = new PathFinder(this);
     EnvironmentManager eManager = new EnvironmentManager(this);
+    tile.Map map = new tile.Map(this);
     Config config = new Config(this);
     Thread gameThread;
 
@@ -79,6 +80,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int transitionState = 7;
     public final int tradeState = 8;
     public final int sleepState = 9;
+    public final int mapState = 10;
 
     public GamePanel() {
 
@@ -286,10 +288,18 @@ public class GamePanel extends JPanel implements Runnable {
 
             // empty entity list
             entityList.clear();
-        }
 
-        // Environment
-        eManager.draw(g2);
+            // Environment
+            eManager.draw(g2);
+
+            // Mini map
+            map.drawMiniMap(g2);
+
+            // Map
+            if(gameState == mapState) {
+                map.drawFullMapScreen(g2);
+            }
+        }
 
         // UI
         ui.draw(g2);
