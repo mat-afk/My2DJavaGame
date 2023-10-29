@@ -34,10 +34,6 @@ public class Player extends Entity {
         solidAreaDefaultY = solidArea.y;
 
         setDefaultValues();
-        getImage();
-        getAttackImage();
-        getGuardingImage();
-        setItems();
     }
 
     public void setDefaultValues() {
@@ -59,11 +55,19 @@ public class Player extends Entity {
         exp = 0;
         nextLevelExp = 5;
         coin = 500;
+
+        currentLight = null;
+
         currentWeapon = new OBJ_SwordNormal(gp);
         currentShield = new OBJ_ShieldWood(gp);
         projectile = new OBJ_Fireball(gp);
         attack = getAttack();
         defense = getDefense();
+
+        getImage();
+        getAttackImage();
+        getGuardingImage();
+        setItems();
     }
 
     public void setDefaultPositions() {
@@ -73,15 +77,35 @@ public class Player extends Entity {
         direction = "down";
     }
 
-    private int getAttack() {
+    public int getAttack() {
         attackArea = currentWeapon.attackArea;
         motion1Duration = currentWeapon.motion1Duration;
         motion2Duration = currentWeapon.motion2Duration;
         return strength * currentWeapon.attackValue;
     }
 
-    private int getDefense() {
+    public int getDefense() {
         return dexterity * currentShield.defenseValue;
+    }
+
+    public int getCurrentWeaponSlot() {
+        int currentWeaponSlot = -1;
+        for(int i = 0; i < inventory.size(); i++) {
+            if(inventory.get(i) == currentWeapon) {
+                currentWeaponSlot = i;
+            }
+        }
+        return currentWeaponSlot;
+    }
+
+    public int getCurrentShieldSlot() {
+        int currentShieldSlot = -1;
+        for(int i = 0; i < inventory.size(); i++) {
+            if(inventory.get(i) == currentShield) {
+                currentShieldSlot = i;
+            }
+        }
+        return currentShieldSlot;
     }
 
     public void setItems() {
@@ -92,11 +116,15 @@ public class Player extends Entity {
         inventory.add(new OBJ_Axe(gp));
     }
 
-    public void restoreLifeAndMana() {
+    public void restoreStatus() {
         life = maxLife;
         mana = maxMana;
         invincible = false;
         transparent = false;
+        attacking = false;
+        guarding = false;
+        knockBack = false;
+        lightUpdated = true;
     }
 
     public void getImage() {

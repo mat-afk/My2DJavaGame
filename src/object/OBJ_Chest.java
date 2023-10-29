@@ -5,12 +5,8 @@ import main.GamePanel;
 
 public class OBJ_Chest extends Entity {
 
-    Entity loot;
-    boolean opened = false;
-
-    public OBJ_Chest(GamePanel gp, Entity loot) {
+    public OBJ_Chest(GamePanel gp) {
         super(gp);
-        this.loot = loot;
 
         name = "Chest";
         image = setup("/objects/chest");
@@ -26,6 +22,11 @@ public class OBJ_Chest extends Entity {
         solidArea.height = 32;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+    }
+
+    @Override
+    public void setLoot(Entity loot) {
+        this.loot = loot;
     }
 
     @Override

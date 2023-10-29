@@ -18,6 +18,7 @@ public class OBJ_Rock extends Projectile {
         life = maxLife;
 
         attack = 2;
+        knockBackPower = 0;
         useCost = 1;
         alive = false;
 
@@ -38,10 +39,6 @@ public class OBJ_Rock extends Projectile {
 
     public boolean haveResource(Entity user) {
         return user.ammo >= useCost;
-    }
-
-    public void substractResource(Entity user) {
-        user.ammo -= useCost;
     }
 
     public Color getParticleColor() {

@@ -71,7 +71,9 @@ public class KeyHandler implements KeyListener {
                 switch (gp.ui.commandNum) {
                     case 0 -> gp.ui.titleScreenState = 1;
                     case 1 -> {
-                        // add later
+                        gp.saveLoad.load();
+                        gp.gameState = gp.playState;
+                        gp.playMusic(0);
                     }
                     case 2 -> System.exit(0);
                 }
@@ -284,13 +286,13 @@ public class KeyHandler implements KeyListener {
             // Retry
             if (gp.ui.commandNum == 0) {
                 gp.gameState = gp.playState;
-                gp.retry();
+                gp.resetGame(false);
                 gp.playMusic(0);
                 // Quit
             } else if(gp.ui.commandNum == 1) {
                 gp.gameState = gp.titleState;
                 gp.ui.titleScreenState = 0;
-                gp.restart();
+                gp.resetGame(true);
             }
         }
     }

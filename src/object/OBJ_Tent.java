@@ -19,7 +19,7 @@ public class OBJ_Tent extends Entity {
 
         gp.gameState = gp.sleepState;
         gp.playSoundEffect(14);
-        gp.player.restoreLifeAndMana();
+        gp.player.restoreStatus();
         gp.player.getSleepingImage(down1);
         return true;
     }

@@ -92,6 +92,8 @@ public class Entity {
     public boolean stackable = false;
     public int amount = 1;
     public int lightRadius;
+    public Entity loot;
+    public boolean opened = false;
 
     // Type
     public int type = 0;
@@ -153,6 +155,8 @@ public class Entity {
     public int getGoalRow(Entity target) {
         return (target.worldY + target.solidArea.y) / gp.tileSize;
     }
+
+    public void setLoot(Entity loot) { }
 
     public void setAction() { }
 
