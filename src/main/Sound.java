@@ -36,16 +36,22 @@ public class Sound {
         soundURL[15] = Objects.requireNonNull(getClass().getResource("/sound/blocked.wav"));
         soundURL[16] = Objects.requireNonNull(getClass().getResource("/sound/parry.wav"));
         soundURL[17] = Objects.requireNonNull(getClass().getResource("/sound/speak.wav"));
+        soundURL[18] = Objects.requireNonNull(getClass().getResource("/sound/Merchant.wav"));
+        soundURL[19] = Objects.requireNonNull(getClass().getResource("/sound/Dungeon.wav"));
     }
 
     public void setFile(int i) {
-
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
             clip = AudioSystem.getClip();
             clip.open(ais);
-            fc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            checkVolume();
+
+            if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                fc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                checkVolume();
+            } else {
+                System.out.println("MASTER_GAIN control not supported for this audio clip");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
