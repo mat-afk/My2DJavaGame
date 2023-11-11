@@ -5,12 +5,14 @@ import main.GamePanel;
 
 public class OBJ_SwordNormal extends Entity {
 
+    public final static String OBJ_NAME = "Normal Sword";
+
     public OBJ_SwordNormal(GamePanel gp) {
         super(gp);
 
         type = typeSword;
 
-        name = "Normal Sword";
+        name = OBJ_NAME;
         description = "[" + name + "]\nAn old sword.";
 
         down1 = setup("/objects/sword_normal");

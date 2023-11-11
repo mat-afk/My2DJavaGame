@@ -5,10 +5,12 @@ import main.GamePanel;
 
 public class OBJ_Door extends Entity {
 
+    public final static String OBJ_NAME = "Door";
+
     public OBJ_Door(GamePanel gp) {
         super(gp);
 
-        name = "Door";
+        name = OBJ_NAME;
         down1 = setup("/objects/door");
         type = typeObstacle;
 

@@ -5,10 +5,12 @@ import main.GamePanel;
 
 public class OBJ_Chest extends Entity {
 
+    public final static String OBJ_NAME = "Chest";
+
     public OBJ_Chest(GamePanel gp) {
         super(gp);
 
-        name = "Chest";
+        name = OBJ_NAME;
         image = setup("/objects/chest");
         image2 = setup("/objects/chest_opened");
         down1 = image;

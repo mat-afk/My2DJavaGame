@@ -5,12 +5,14 @@ import main.GamePanel;
 
 public class OBJ_Axe extends Entity {
 
+    public final static String OBJ_NAME = "Woodcutter's Axe";
+
     public OBJ_Axe(GamePanel gp) {
         super(gp);
 
         type = typeAxe;
 
-        name = "Woodcutter's Axe";
+        name = OBJ_NAME;
         description = "[" + name + "]\nProbably from Canada.\nCan cut some trees.";
         down1 = setup("/objects/axe");
 

@@ -5,10 +5,12 @@ import main.GamePanel;
 
 public class OBJ_Key extends Entity {
 
+    public final static String OBJ_NAME = "Key";
+
     public OBJ_Key(GamePanel gp) {
         super(gp);
 
-        name = "Key";
+        name = OBJ_NAME;
         description = "[" + name + "]\nIt opens a door.";
         down1 = setup("/objects/key");
         type = typeConsumable;

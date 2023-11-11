@@ -5,6 +5,7 @@ import main.GamePanel;
 
 public class OBJ_Heart extends Entity {
 
+    public final static String OBJ_NAME = "Heart";
     int heal;
 
     public OBJ_Heart(GamePanel gp) {
@@ -12,7 +13,7 @@ public class OBJ_Heart extends Entity {
         super(gp);
 
         type = typePickup;
-        name = "Heart";
+        name = OBJ_NAME;
         heal = 2;
 
         down1 = setup("/objects/heart_full");

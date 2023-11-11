@@ -516,6 +516,8 @@ public class Player extends Entity {
 
             gp.playSoundEffect(8);
             gp.gameState = gp.dialogueState;
+
+            setDialogue();
             startDialogue(this, 0);
         }
     }
@@ -579,8 +581,10 @@ public class Player extends Entity {
 
         boolean canObtain = false;
 
+        Entity newItem = gp.eGenerator.getObject(item.name);
+
         // Check if item is stackable
-        if(item.stackable) {
+        if(newItem.stackable) {
             int index = searchItemInInventory(item.name);
 
             if(index != 999) {
@@ -590,14 +594,14 @@ public class Player extends Entity {
             else {
                 // New item
                 if(inventoryIsNotFull()) {
-                    inventory.add(item);
+                    inventory.add(newItem);
                     canObtain = true;
                 }
             }
         } else {
             // Item not stackable
             if(inventoryIsNotFull()) {
-                inventory.add(item);
+                inventory.add(newItem);
                 canObtain = true;
             }
         }

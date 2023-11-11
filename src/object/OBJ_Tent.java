@@ -5,10 +5,12 @@ import main.GamePanel;
 
 public class OBJ_Tent extends Entity {
 
+    public final static String OBJ_NAME = "Tent";
+
     public OBJ_Tent(GamePanel gp) {
         super(gp);
 
-        name = "Tent";
+        name = OBJ_NAME;
         type = typeConsumable;
         down1 = setup("/objects/tent");
         description = "[Tent] \nYou can sleep until \nnext morning.";
