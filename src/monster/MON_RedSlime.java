@@ -9,20 +9,21 @@ import object.OBJ_Rock;
 
 import java.util.Random;
 
-public class MON_GreenSlime extends Entity {
+public class MON_RedSlime extends Entity {
 
-    public MON_GreenSlime(GamePanel gp) {
+
+    public MON_RedSlime(GamePanel gp) {
         super(gp);
 
         type = typeMonster;
-        name = "Green Slime";
-        defaultSpeed = 1;
+        name = "Red Slime";
+        defaultSpeed = 2;
         speed = defaultSpeed;
         maxLife = 4;
         life = maxLife;
-        attack = 5;
+        attack = 7;
         defense = 0;
-        exp = 2;
+        exp = 4;
 
         projectile = new OBJ_Rock(gp);
 
@@ -37,14 +38,14 @@ public class MON_GreenSlime extends Entity {
     }
 
     public void getMonsterImage() {
-        up1 = setup("/monster/greenslime_down_1");
-        up2 = setup("/monster/greenslime_down_2");
-        down1 = setup("/monster/greenslime_down_1");
-        down2 = setup("/monster/greenslime_down_2");
-        left1= setup("/monster/greenslime_down_1");
-        left2 = setup("/monster/greenslime_down_2");
-        right1 = setup("/monster/greenslime_down_1");
-        right2 = setup("/monster/greenslime_down_2");
+        up1 = setup("/monster/redslime_down_1");
+        up2 = setup("/monster/redslime_down_2");
+        down1 = setup("/monster/redslime_down_1");
+        down2 = setup("/monster/redslime_down_2");
+        left1= setup("/monster/redslime_down_1");
+        left2 = setup("/monster/redslime_down_2");
+        right1 = setup("/monster/redslime_down_1");
+        right2 = setup("/monster/redslime_down_2");
     }
 
     public void setAction() {
@@ -56,6 +57,8 @@ public class MON_GreenSlime extends Entity {
 
             // Monster aggro the player
             searchPlayer(getGoalCol(gp.player), getGoalRow(gp.player));
+
+            checkShot(200, 30);
         }
         else {
 

@@ -1,6 +1,7 @@
 package main;
 
 import monster.MON_Orc;
+import monster.MON_RedSlime;
 import npc.NPC_Merchant;
 import npc.NPC_OldMan;
 import monster.MON_GreenSlime;
@@ -32,7 +33,7 @@ public class AssetSetter {
         gp.obj[mapNum][i] = new OBJ_Chest(gp);
         gp.obj[mapNum][i].setLoot(new OBJ_Key(gp));
         gp.obj[mapNum][i].worldX = gp.tileSize * 30;
-        gp.obj[mapNum][i].worldY = gp.tileSize * 27;
+        gp.obj[mapNum][i].worldY = gp.tileSize * 29;
 
         i++;
         gp.obj[mapNum][i] = new OBJ_Lantern(gp);
@@ -92,6 +93,16 @@ public class AssetSetter {
         gp.monster[mapNum][i].worldX = gp.tileSize * 12;
         gp.monster[mapNum][i].worldY = gp.tileSize * 33;
 
+        i++;
+        gp.monster[mapNum][i] = new MON_RedSlime(gp);
+        gp.monster[mapNum][i].worldX = gp.tileSize * 37;
+        gp.monster[mapNum][i].worldY = gp.tileSize * 10;
+
+        i++;
+        gp.monster[mapNum][i] = new MON_RedSlime(gp);
+        gp.monster[mapNum][i].worldX = gp.tileSize * 39;
+        gp.monster[mapNum][i].worldY = gp.tileSize * 12;
+
     }
 
     public void setInteractiveTile() {
@@ -106,34 +117,34 @@ public class AssetSetter {
         // Chest way
 
         i++;
-        gp.iTile[mapNum][i] = new IT_DryTree(gp, 30, 29);
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 30, 31);
 
         i++;
-        gp.iTile[mapNum][i] = new IT_DryTree(gp, 29, 29);
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 29, 31);
 
         i++;
-        gp.iTile[mapNum][i] = new IT_DryTree(gp, 28, 29);
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 28, 31);
 
         i++;
-        gp.iTile[mapNum][i] = new IT_DryTree(gp, 28, 28);
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 27, 31);
 
         i++;
-        gp.iTile[mapNum][i] = new IT_DryTree(gp, 28, 27);
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 27, 30);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 27, 29);
+
+        i++;
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 27, 28);
 
         i++;
         gp.iTile[mapNum][i] = new IT_DryTree(gp, 27, 27);
 
         i++;
-        gp.iTile[mapNum][i] = new IT_DryTree(gp, 27, 26);
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 26, 27);
 
         i++;
-        gp.iTile[mapNum][i] = new IT_DryTree(gp, 27, 25);
-
-        i++;
-        gp.iTile[mapNum][i] = new IT_DryTree(gp, 26, 25);
-
-        i++;
-        gp.iTile[mapNum][i] = new IT_DryTree(gp, 25, 25);
+        gp.iTile[mapNum][i] = new IT_DryTree(gp, 25, 27);
 
         // Axe way
 
