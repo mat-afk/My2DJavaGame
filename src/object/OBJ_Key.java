@@ -15,6 +15,14 @@ public class OBJ_Key extends Entity {
         stackable = true;
 
         price = 100;
+
+        setDialogue();
+    }
+
+    public void setDialogue() {
+        dialogues[0][0] = "You used the " + name + " to open the door";
+
+        dialogues[1][0] = "It is not time for that.";
     }
 
     @Override
@@ -25,13 +33,13 @@ public class OBJ_Key extends Entity {
         int objIndex = getDetected(entity, gp.obj, "Door");
 
         if(objIndex != 999) {
-            gp.ui.currentDialogue = "You used the " + name + " to open the door";
+            startDialogue(this, 0);
             gp.playSoundEffect(3);
             gp.obj[gp.currentMap][objIndex] = null;
             return true;
         }
         else {
-            gp.ui.currentDialogue = "It is not time for that.";
+            startDialogue(this, 1);
             return false;
         }
     }

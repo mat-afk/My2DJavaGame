@@ -19,6 +19,15 @@ public class OBJ_Potion extends Entity {
         stackable = true;
 
         price = 25;
+
+        setDialogue();
+    }
+
+    public void setDialogue() {
+        dialogues[0][0] = "You drink the " + name + "!\n" +
+                "Your life has been recovered by " + heal + ".";
+
+        dialogues[1][0] = "Your life is full!";
     }
 
     public boolean use(Entity entity) {
@@ -26,12 +35,11 @@ public class OBJ_Potion extends Entity {
         gp.gameState = gp.dialogueState;
 
         if(entity.life == maxLife) {
-            gp.ui.currentDialogue = "Your life is full!";
+            startDialogue(this, 1);
             return false;
         }
 
-        gp.ui.currentDialogue = "You drink the " + name + "!\n" +
-            "Your life has been recovered by " + heal + ".";
+        startDialogue(this, 0);
         entity.life += heal;
 
         gp.playSoundEffect(2);

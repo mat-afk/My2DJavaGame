@@ -68,6 +68,7 @@ public class Player extends Entity {
         getAttackImage();
         getGuardingImage();
         setItems();
+        setDialogue();
     }
 
     public void setDefaultPositions() {
@@ -75,6 +76,11 @@ public class Player extends Entity {
         worldY = gp.tileSize * 21;
         gp.currentMap = 0;
         direction = "down";
+    }
+
+    public void setDialogue() {
+        dialogues[0][0] = "You are level " + level + " now!\n"
+                + "You feel stronger!";
     }
 
     public int getAttack() {
@@ -119,6 +125,7 @@ public class Player extends Entity {
     public void restoreStatus() {
         life = maxLife;
         mana = maxMana;
+        speed = defaultSpeed;
         invincible = false;
         transparent = false;
         attacking = false;
@@ -293,7 +300,7 @@ public class Player extends Entity {
         }
         else {
             standCounter++;
-            if(standCounter == 20) {
+            if(standCounter == 40) {
                 spriteNum = 1;
                 standCounter = 0;
             }
@@ -326,6 +333,7 @@ public class Player extends Entity {
             invincibleCounter++;
             if (invincibleCounter > 60) {
                 invincible = false;
+                transparent = false;
                 invincibleCounter = 0;
             }
         }
@@ -404,7 +412,6 @@ public class Player extends Entity {
         if(gp.keyH.enterPressed) {
             if(i != 999) {
                 attackCanceled = true;
-                gp.gameState = gp.dialogueState;
                 gp.npc[gp.currentMap][i].speak();
             }
         }
@@ -509,8 +516,7 @@ public class Player extends Entity {
 
             gp.playSoundEffect(8);
             gp.gameState = gp.dialogueState;
-            gp.ui.currentDialogue = "You are level " + level + " now!\n"
-                    + "You feel stronger!";
+            startDialogue(this, 0);
         }
     }
 
